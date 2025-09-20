@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Canvas AI Study Assistant",
+  "name": "Canvas AI Study Assistant - MVP",
   "version": "1.0.0",
-  "description": "An AI-powered study assistant that integrates with Canvas to help students manage assignments and get personalized help using Gemini AI.",
+  "description": "A minimal study assistant that shows a simple message on Canvas pages.",
   "permissions": [
-    "activeTab",
-    "storage"
+    "activeTab"
   ],
   "host_permissions": [
     "https://*.instructure.com/*",
@@ -13,7 +12,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Canvas AI Study Assistant Settings"
+    "default_title": "Canvas AI Study Assistant - MVP"
   },
   "content_scripts": [
     {

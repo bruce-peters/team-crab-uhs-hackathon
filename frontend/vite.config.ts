@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: './', // Use relative paths for assets
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -17,19 +18,22 @@ export default defineConfig({
         // Extension scripts only
         background: path.resolve(__dirname, "src/extension/background/background.ts"),
         content: path.resolve(__dirname, "src/extension/content/content.ts"),
-        popup: path.resolve(__dirname, "src/extension/popup/popup.tsx"),
-        dashboard: path.resolve(__dirname, "src/extension/dashboard/dashboard.tsx"),
+        popup: path.resolve(__dirname, "public/popup.html"),
+        dashboard: path.resolve(__dirname, "public/dashboard.html"),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          // Keep extension files with specific names
-          if (['background', 'content'].includes(chunkInfo.name || '')) {
+          // Keep extension files with specific names and use IIFE for content script
+          if (chunkInfo.name === 'content') {
+            return `${chunkInfo.name}.js`;
+          }
+          if (chunkInfo.name === 'background') {
             return `${chunkInfo.name}.js`;
           }
           return 'assets/[name]-[hash].js';
         },
         chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       }
     },
     outDir: 'dist',

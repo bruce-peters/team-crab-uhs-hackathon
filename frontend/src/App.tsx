@@ -1,4 +1,3 @@
-import { CookingPot } from "lucide-react";
 import { Card, CardFooter, CardHeader } from "./components/ui/card";
 
 function App() {

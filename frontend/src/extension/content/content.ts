@@ -1,6 +1,4 @@
-// Content script to inject Dashboard React component into Canvas pages
-import { createRoot } from 'react-dom/client';
-import { Dashboard } from '../dashboard/components/Dashboard';
+// Content script to inject Dashboard into Canvas pages
 import '../../index.css';
 
 class CanvasInjector {
@@ -47,7 +45,7 @@ class CanvasInjector {
       return;
     }
 
-    this.injectReactDashboard(targetContainer);
+    this.injectDashboardIframe(targetContainer);
     this.dashboardInjected = true;
   }
 
@@ -72,18 +70,34 @@ class CanvasInjector {
     return null;
   }
 
-  private injectReactDashboard(targetContainer: HTMLElement) {
-    // Create container for React dashboard
+  private injectDashboardIframe(targetContainer: HTMLElement) {
+    // Create container for dashboard iframe
     const dashboardContainer = document.createElement('div');
     dashboardContainer.id = this.DASHBOARD_ID;
     dashboardContainer.className = 'ai-study-assistant-container';
     
-    // Add some basic styling to make it fit well in Canvas
+    // Add styling to make it fit well in Canvas
     dashboardContainer.style.cssText = `
       margin-bottom: 20px;
       font-family: inherit;
       z-index: 1000;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     `;
+
+    // Create iframe pointing to dashboard.html
+    const iframe = document.createElement('iframe');
+    iframe.src = chrome.runtime.getURL('dashboard.html');
+    iframe.style.cssText = `
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 8px;
+    `;
+
+    dashboardContainer.appendChild(iframe);
 
     // Insert at the top of the target container
     if (targetContainer.firstChild) {
@@ -91,10 +105,6 @@ class CanvasInjector {
     } else {
       targetContainer.appendChild(dashboardContainer);
     }
-
-    // Create React root and render Dashboard component
-    const root = createRoot(dashboardContainer);
-    root.render(<Dashboard />);
   }
 }
 

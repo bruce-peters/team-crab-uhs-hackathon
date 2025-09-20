@@ -14,9 +14,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        // Main app (kept for compatibility)
-        main: path.resolve(__dirname, "index.html"),
-        // Extension scripts
+        // Extension scripts only
         background: path.resolve(__dirname, "src/extension/background/background.ts"),
         content: path.resolve(__dirname, "src/extension/content/content.ts"),
         popup: path.resolve(__dirname, "src/extension/popup/popup.tsx"),
@@ -31,11 +29,7 @@ export default defineConfig({
           return 'assets/[name]-[hash].js';
         },
         chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: (assetInfo) => {
-          // Handle CSS files for content script
-          if (assetInfo.name?.includes('content')) return 'content.css';
-          return 'assets/[name]-[hash].[ext]';
-        }
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
     outDir: 'dist',

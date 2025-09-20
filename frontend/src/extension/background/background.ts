@@ -7,8 +7,8 @@ let canvasAPI: CanvasAPI;
 let geminiAPI: GeminiAPI;
 
 // Load settings and initialize services
-chrome.storage.sync.get(['settings'], (result) => {
-  const settings: ExtensionSettings = result.settings || {
+chrome.storage.sync.get(['settings'], (result: Record<string, unknown>) => {
+  const settings: ExtensionSettings = result.settings as ExtensionSettings || {
     geminiApiKey: '',
     canvasUrl: '',
     enableNotifications: true,
@@ -29,7 +29,7 @@ function initializeServices(settings: ExtensionSettings) {
 // Handle messages from content scripts and popup
 chrome.runtime.onMessage.addListener((
   message: ExtensionMessage,
-  _sender,
+  _sender: chrome.runtime.MessageSender,
   sendResponse: (response: ExtensionResponse) => void
 ) => {
   handleMessage(message).then(sendResponse);
@@ -93,7 +93,7 @@ async function handleMessage(message: ExtensionMessage): Promise<ExtensionRespon
 // Set up periodic assignment checking for notifications
 chrome.alarms.create('checkAssignments', { periodInMinutes: 60 });
 
-chrome.alarms.onAlarm.addListener(async (alarm) => {
+chrome.alarms.onAlarm.addListener(async (alarm: chrome.alarms.Alarm) => {
   if (alarm.name === 'checkAssignments') {
     try {
       const settings = await chrome.storage.sync.get(['settings']);
@@ -132,7 +132,7 @@ async function checkForUpcomingAssignments() {
 }
 
 // Install/update handler
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails) => {
   if (details.reason === 'install') {
     // Set default settings
     const defaultSettings: ExtensionSettings = {

@@ -10,9 +10,9 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
 
 // Minimal message handler (just for completeness)
 chrome.runtime.onMessage.addListener((
-  message: any,
+  message: { type: string },
   _sender: chrome.runtime.MessageSender,
-  sendResponse: (response: any) => void
+  sendResponse: (response: { success: boolean; message: string }) => void
 ) => {
   // For MVP, just acknowledge messages
   console.log('Background received message:', message.type);

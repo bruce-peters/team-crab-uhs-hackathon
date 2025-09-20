@@ -12,4 +12,5 @@ if (container) {
   root.render(<PopupApp />);
 }
 
-export {}; // Make this a module to satisfy react-refresh
+// Export the component to satisfy React refresh linting
+export { PopupApp };

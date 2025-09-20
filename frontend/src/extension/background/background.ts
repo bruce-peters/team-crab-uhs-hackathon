@@ -7,8 +7,8 @@ let canvasAPI: CanvasAPI;
 let geminiAPI: GeminiAPI;
 
 // Load settings and initialize services
-chrome.storage.sync.get(['settings'], (result: { [key: string]: any }) => {
-  const settings: ExtensionSettings = result.settings || {
+chrome.storage.sync.get(['settings'], (result: Record<string, unknown>) => {
+  const settings: ExtensionSettings = result.settings as ExtensionSettings || {
     geminiApiKey: '',
     canvasUrl: '',
     enableNotifications: true,

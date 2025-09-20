@@ -1,5 +1,7 @@
 // Content script to inject dashboard into Canvas navbar
 import type { AssignmentWithCourse } from '../types';
+// Import Tailwind CSS styles
+import '../../index.css';
 
 class CanvasInjector {
   private dashboardInjected = false;
@@ -111,7 +113,7 @@ class CanvasInjector {
     document.body.appendChild(overlay);
 
     // Load dashboard content
-    const dashboardContainer = overlay.querySelector('.dashboard-content');
+    const dashboardContainer = overlay.querySelector('.flex-1.overflow-y-auto.p-6');
     if (dashboardContainer) {
       await this.loadDashboardContent(dashboardContainer as HTMLElement);
     }
@@ -120,22 +122,22 @@ class CanvasInjector {
   private createDashboardModal(): HTMLElement {
     const overlay = document.createElement('div');
     overlay.id = this.DASHBOARD_ID;
-    overlay.className = 'ai-dashboard-overlay';
+    overlay.className = 'fixed inset-0 bg-black bg-opacity-50 z-[10000] flex items-center justify-center font-sans';
     
     overlay.innerHTML = `
-      <div class="ai-dashboard-modal">
-        <div class="ai-dashboard-header">
-          <h2>AI Study Assistant Dashboard</h2>
-          <button class="ai-dashboard-close">&times;</button>
+      <div class="bg-white rounded-xl shadow-xl max-w-4xl w-[90%] max-h-[80vh] overflow-hidden flex flex-col">
+        <div class="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
+          <h2 class="text-2xl font-semibold text-gray-900 m-0">✨ AI Study Assistant Dashboard</h2>
+          <button class="bg-none border-none text-2xl cursor-pointer text-gray-500 p-0 w-8 h-8 flex items-center justify-center rounded-md hover:bg-gray-200 hover:text-gray-700 transition-all">×</button>
         </div>
-        <div class="dashboard-content">
-          <div class="loading">Loading your assignments...</div>
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="text-center py-8 text-gray-500 text-lg">Loading your assignments...</div>
         </div>
       </div>
     `;
 
     // Add close functionality
-    const closeBtn = overlay.querySelector('.ai-dashboard-close');
+    const closeBtn = overlay.querySelector('button');
     closeBtn?.addEventListener('click', () => {
       overlay.remove();
     });
@@ -159,17 +161,17 @@ class CanvasInjector {
       if (response.success) {
         container.innerHTML = this.renderAssignmentsList(response.data);
       } else {
-        container.innerHTML = `<div class="error">Failed to load assignments: ${response.error}</div>`;
+        container.innerHTML = `<div class="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">Failed to load assignments: ${response.error}</div>`;
       }
     } catch (error) {
       console.error('Error loading dashboard content:', error);
-      container.innerHTML = '<div class="error">Failed to load assignments. Please try again.</div>';
+      container.innerHTML = '<div class="bg-red-50 text-red-600 p-4 rounded-lg border border-red-200">Failed to load assignments. Please try again.</div>';
     }
   }
 
   private renderAssignmentsList(assignments: AssignmentWithCourse[]): string {
     if (!assignments.length) {
-      return '<div class="no-assignments">No upcoming assignments found!</div>';
+      return '<div class="text-center py-12 text-green-600 text-xl font-medium">🎉 No upcoming assignments found!</div>';
     }
 
     const assignmentItems = assignments.map(assignment => {
@@ -178,22 +180,22 @@ class CanvasInjector {
       const dueDateStr = dueDate ? dueDate.toLocaleDateString() : 'No due date';
       
       return `
-        <div class="assignment-item ${isOverdue ? 'overdue' : ''}">
-          <div class="assignment-header">
-            <h3>${assignment.name}</h3>
-            <span class="course-badge">${assignment.course_code}</span>
+        <div class="bg-white border border-gray-200 rounded-xl p-6 transition-all hover:border-gray-300 hover:shadow-md ${isOverdue ? 'border-red-300 bg-red-50' : ''}">
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 m-0 flex-1">${assignment.name}</h3>
+            <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-medium ml-4">${assignment.course_code}</span>
           </div>
-          <div class="assignment-details">
-            <p><strong>Course:</strong> ${assignment.course_name}</p>
-            <p><strong>Due:</strong> ${dueDateStr}</p>
-            <p><strong>Points:</strong> ${assignment.points_possible}</p>
-            ${assignment.description ? `<p><strong>Description:</strong> ${assignment.description.substring(0, 100)}...</p>` : ''}
+          <div class="mb-4 space-y-2">
+            <p class="text-gray-600 text-sm m-0"><span class="font-medium text-gray-700">Course:</span> ${assignment.course_name}</p>
+            <p class="text-gray-600 text-sm m-0"><span class="font-medium text-gray-700">Due:</span> ${dueDateStr}</p>
+            <p class="text-gray-600 text-sm m-0"><span class="font-medium text-gray-700">Points:</span> ${assignment.points_possible}</p>
+            ${assignment.description ? `<p class="text-gray-600 text-sm m-0"><span class="font-medium text-gray-700">Description:</span> ${assignment.description.substring(0, 100)}...</p>` : ''}
           </div>
-          <div class="assignment-actions">
-            <button class="btn-primary" onclick="window.open('${assignment.html_url}', '_blank')">
+          <div class="flex gap-3 flex-wrap">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-all hover:bg-blue-600 flex items-center gap-2" onclick="window.open('${assignment.html_url}', '_blank')">
               View Assignment
             </button>
-            <button class="btn-secondary get-help" data-assignment-id="${assignment.id}">
+            <button class="bg-gray-100 text-gray-700 border border-gray-300 px-4 py-2 rounded-md text-sm font-medium cursor-pointer transition-all hover:bg-gray-200 hover:border-gray-400 get-help" data-assignment-id="${assignment.id}">
               Get AI Help
             </button>
           </div>
@@ -202,12 +204,12 @@ class CanvasInjector {
     }).join('');
 
     return `
-      <div class="assignments-container">
-        <div class="assignments-header">
-          <h3>Your Upcoming Assignments (${assignments.length})</h3>
-          <button class="btn-ai generate-study-plan">Generate Study Plan</button>
+      <div class="max-w-full">
+        <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-gray-200">
+          <h3 class="text-xl font-semibold text-gray-900 m-0">Your Upcoming Assignments (${assignments.length})</h3>
+          <button class="bg-purple-500 text-white px-6 py-2 rounded-md text-sm font-medium cursor-pointer transition-all hover:bg-purple-600 generate-study-plan">Generate Study Plan</button>
         </div>
-        <div class="assignments-list">
+        <div class="flex flex-col gap-4">
           ${assignmentItems}
         </div>
       </div>

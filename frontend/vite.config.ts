@@ -17,7 +17,7 @@ export default defineConfig({
       input: {
         // Extension scripts only
         background: path.resolve(__dirname, "src/extension/background/background.ts"),
-        content: path.resolve(__dirname, "src/extension/content/content.ts"),
+        content: path.resolve(__dirname, "src/extension/content/content.tsx"),
         popup: path.resolve(__dirname, "public/popup.html"),
         dashboard: path.resolve(__dirname, "public/dashboard.html"),
       },

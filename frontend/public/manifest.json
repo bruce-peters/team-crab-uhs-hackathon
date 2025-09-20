@@ -19,10 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://*.instructure.com/*",
-        "https://*.canvaslms.com/*"
-      ],
+      "matches": ["https://*.instructure.com/*", "https://*.canvaslms.com/*"],
       "js": ["content.js"],
       "run_at": "document_end"
     }
@@ -33,15 +30,8 @@
   "web_accessible_resources": [
     {
       "resources": ["dashboard.html", "assets/*"],
-      "matches": [
-        "https://*.instructure.com/*",
-        "https://*.canvaslms.com/*"
-      ]
+      "matches": ["https://*.instructure.com/*", "https://*.canvaslms.com/*"]
     }
-  ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  ]
 }
+

@@ -1,4 +1,4 @@
-// Content script to inject Dashboard into Canvas pages
+// Minimal content script to inject Dashboard into Canvas pages
 import '../../index.css';
 
 class CanvasInjector {
@@ -16,22 +16,6 @@ class CanvasInjector {
     } else {
       this.injectDashboard();
     }
-
-    // Watch for navigation changes (Canvas is a SPA)
-    this.observeNavigationChanges();
-  }
-
-  private observeNavigationChanges() {
-    const observer = new MutationObserver(() => {
-      if (!this.dashboardInjected) {
-        this.injectDashboard();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
   }
 
   private injectDashboard() {
@@ -47,6 +31,7 @@ class CanvasInjector {
 
     this.injectDashboardIframe(targetContainer);
     this.dashboardInjected = true;
+    console.log('Canvas AI Study Assistant MVP injected successfully');
   }
 
   private findInjectionTarget(): HTMLElement | null {
@@ -92,7 +77,7 @@ class CanvasInjector {
     iframe.src = chrome.runtime.getURL('dashboard.html');
     iframe.style.cssText = `
       width: 100%;
-      height: 600px;
+      height: 300px;
       border: none;
       border-radius: 8px;
     `;

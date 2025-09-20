@@ -16,7 +16,7 @@ export const SettingsPage: React.FC = () => {
   useEffect(() => {
     // Load settings from Chrome storage
     if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.sync.get(['settings'], (result) => {
+      chrome.storage.sync.get(['settings'], (result: { [key: string]: any }) => {
         if (result.settings) {
           setSettings(result.settings);
         }

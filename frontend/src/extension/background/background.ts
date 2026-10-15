@@ -5,6 +5,7 @@ import type { ExtensionMessage, ExtensionResponse, ExtensionSettings, Assignment
 // Initialize services
 let canvasAPI: CanvasAPI;
 let geminiAPI: GeminiAPI;
+let configuredCanvasUrl = '';
 
 // Load settings and initialize services
 chrome.storage.sync.get(['settings'], (result: Record<string, unknown>) => {
@@ -20,10 +21,22 @@ chrome.storage.sync.get(['settings'], (result: Record<string, unknown>) => {
 });
 
 function initializeServices(settings: ExtensionSettings) {
+  configuredCanvasUrl = settings.canvasUrl;
   canvasAPI = new CanvasAPI(settings.canvasUrl);
   if (settings.geminiApiKey) {
     geminiAPI = new GeminiAPI(settings.geminiApiKey);
   }
+}
+
+// The service worker has no `window`, so it cannot auto-detect the Canvas URL
+// itself. When no Canvas URL is configured, use the origin of the Canvas page
+// the dashboard was opened from (passed along by the content script).
+function canvasApiFor(payload: unknown): CanvasAPI {
+  const pageUrl = (payload as { canvasUrl?: string } | undefined)?.canvasUrl;
+  if (!configuredCanvasUrl && pageUrl && /^https:\/\/[^/]+\.(instructure|canvaslms)\.com$/.test(pageUrl)) {
+    return new CanvasAPI(pageUrl);
+  }
+  return canvasAPI;
 }
 
 // Handle messages from content scripts and popup
@@ -40,12 +53,12 @@ async function handleMessage(message: ExtensionMessage): Promise<ExtensionRespon
   try {
     switch (message.type) {
       case 'GET_ASSIGNMENTS': {
-        const assignmentData = await canvasAPI.getAssignments();
+        const assignmentData = await canvasApiFor(message.payload).getAssignments();
         return { success: true, data: assignmentData };
       }
 
       case 'GET_COURSES': {
-        const courses = await canvasAPI.getCourses();
+        const courses = await canvasApiFor(message.payload).getCourses();
         return { success: true, data: courses };
       }
 

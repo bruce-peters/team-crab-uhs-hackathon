@@ -88,8 +88,11 @@ class CanvasInjector {
     `;
 
     // Create iframe pointing to dashboard.html
+    // Pass this Canvas page's origin so the dashboard can load assignments
+    // without a Canvas URL being configured in settings.
     const iframe = document.createElement('iframe');
-    iframe.src = chrome.runtime.getURL('dashboard.html');
+    iframe.src = chrome.runtime.getURL('dashboard.html') +
+      '?canvasUrl=' + encodeURIComponent(window.location.origin);
     iframe.style.cssText = `
       width: 100%;
       height: 600px;

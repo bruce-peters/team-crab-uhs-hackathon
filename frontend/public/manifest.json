@@ -5,7 +5,8 @@
   "description": "An AI-powered study assistant that integrates with Canvas to help students manage assignments and get personalized help using Gemini AI.",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
     "https://*.instructure.com/*",

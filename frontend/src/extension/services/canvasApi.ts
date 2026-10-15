@@ -1,5 +1,9 @@
 import type { CanvasAssignment, CanvasCourse, AssignmentWithCourse } from '../types';
 
+// Canvas prefixes session-authenticated JSON with `while(1);` unless the
+// request asks for JSON explicitly, which would make response.json() fail.
+const CANVAS_HEADERS = { Accept: 'application/json' };
+
 export class CanvasAPI {
   private baseUrl: string;
 
@@ -20,7 +24,8 @@ export class CanvasAPI {
   async getCurrentUser() {
     try {
       const response = await fetch(`${this.baseUrl}/api/v1/users/self`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers: CANVAS_HEADERS
       });
       return await response.json();
     } catch (error) {
@@ -32,7 +37,8 @@ export class CanvasAPI {
   async getCourses(): Promise<CanvasCourse[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/v1/courses?enrollment_state=active&per_page=100`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers: CANVAS_HEADERS
       });
       return await response.json();
     } catch (error) {
@@ -51,7 +57,7 @@ export class CanvasAPI {
         try {
           const response = await fetch(
             `${this.baseUrl}/api/v1/courses/${course.id}/assignments?per_page=100`,
-            { credentials: 'include' }
+            { credentials: 'include', headers: CANVAS_HEADERS }
           );
           const assignments: CanvasAssignment[] = await response.json();
           

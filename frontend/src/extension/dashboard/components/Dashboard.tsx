@@ -22,7 +22,8 @@ export const Dashboard: React.FC = () => {
       setError(null);
 
       const response = await chrome.runtime.sendMessage({
-        type: 'GET_ASSIGNMENTS'
+        type: 'GET_ASSIGNMENTS',
+        payload: { canvasUrl: new URLSearchParams(window.location.search).get('canvasUrl') || undefined }
       });
 
       if (response.success) {

@@ -2,7 +2,7 @@ import type { AssignmentWithCourse } from '../types';
 
 export class GeminiAPI {
   private apiKey: string;
-  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+  private baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;

@@ -5,7 +5,7 @@ Thank you for your interest in contributing to the Canvas AI Study Assistant! Th
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (version 16 or higher)
+- Node.js 20.19+ or 22.12+ (required by Vite 7)
 - Google Chrome Browser
 - Git
 - Basic knowledge of TypeScript, React, and Chrome Extensions

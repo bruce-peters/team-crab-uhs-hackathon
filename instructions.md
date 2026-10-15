@@ -15,7 +15,7 @@ The Canvas AI Study Assistant is a Chrome browser extension that integrates with
 1. **Google Chrome Browser** (or Chromium-based browser)
 2. **Canvas LMS Account** at your educational institution
 3. **Gemini API Key** (free from Google AI Studio)
-4. **Node.js** (version 16 or higher) for development
+4. **Node.js** 20.19+ or 22.12+ (required by Vite 7) for development
 
 ## Installation & Setup
 

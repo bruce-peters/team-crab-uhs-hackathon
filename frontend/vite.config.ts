@@ -18,8 +18,10 @@ export default defineConfig({
         // Extension scripts only
         background: path.resolve(__dirname, "src/extension/background/background.ts"),
         content: path.resolve(__dirname, "src/extension/content/content.ts"),
-        popup: path.resolve(__dirname, "public/popup.html"),
-        dashboard: path.resolve(__dirname, "public/dashboard.html"),
+        // HTML entry points live in the project root (not public/), so Vite
+        // bundles them and emits dist/popup.html and dist/dashboard.html.
+        popup: path.resolve(__dirname, "popup.html"),
+        dashboard: path.resolve(__dirname, "dashboard.html"),
       },
       output: {
         entryFileNames: (chunkInfo) => {
